@@ -51,6 +51,21 @@ class Web3Client {
   ///Whether errors, handled or not, should be printed to the console.
   bool printErrors = false;
 
+  Future<T> makeRawRPCCall<T>(String function, [List<dynamic>? params]) async {
+    try {
+      final data = await _jsonRpc.call(function, params);
+      // ignore: only_throw_errors
+      if (data is Error || data is Exception) throw data;
+
+      return data.result as T;
+      // ignore: avoid_catches_without_on_clauses
+    } catch (e) {
+      if (printErrors) print(e);
+
+      rethrow;
+    }
+  }
+
   Future<T> _makeRPCCall<T>(String function, [List<dynamic>? params]) async {
     try {
       final data = await _jsonRpc.call(function, params);
