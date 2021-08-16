@@ -26,6 +26,15 @@ dependencies:
   json_rpc_2: ^3.0.0
   collection: ^1.14.11
 
+  ethereum_util:
+    git:
+      url: https://github.com/ludowkm/ethereum_util.git
+      ref: feature/build-latest
+
+dependency_overrides:
+  equatable: ^2.0.3
+  collection: ^1.15.0
+
 dev_dependencies:
   build_runner: ^2.0.3
   build_test: ^2.1.0

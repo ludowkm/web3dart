@@ -3,6 +3,7 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:collection/collection.dart';
+import 'package:ethereum_util/ethereum_util.dart' as ethUtil;
 import 'package:pointycastle/ecc/api.dart' show ECPoint;
 
 import '../../web3dart.dart' show Transaction;
@@ -57,6 +58,16 @@ abstract class Credentials {
 
     return sign(concat, chainId: chainId);
   }
+
+  Future<Uint8List> signTypedData(String data, {int? chainId}) async {
+    final signature = await signEIP712TypedData(data, chainId: chainId);
+    final r = padUint8ListTo32(unsignedIntToBytes(signature.r));
+    final s = padUint8ListTo32(unsignedIntToBytes(signature.s));
+    final v = unsignedIntToBytes(BigInt.from(signature.v));
+    return uint8ListFromList(r + s + v);
+  }
+
+  Future<MsgSignature> signEIP712TypedData(String data, {int? chainId});
 }
 
 /// Credentials where the [address] is known synchronously.
@@ -132,6 +143,15 @@ class EthPrivateKey extends CredentialsWithKnownAddress {
     final chainIdV =
         chainId != null ? (signature.v - 27 + (chainId * 2 + 35)) : signature.v;
 
+    return MsgSignature(signature.r, signature.s, chainIdV);
+  }
+
+  @override
+  Future<MsgSignature> signEIP712TypedData(String data, {int? chainId}) async {
+    final dataHash = ethUtil.Signer.eip712Hash(data);
+    final signature = secp256k1.sign(keccak256(dataHash), privateKey);
+    final chainIdV =
+        chainId != null ? (signature.v - 27 + (chainId * 2 + 35)) : signature.v;
     return MsgSignature(signature.r, signature.s, chainIdV);
   }
 

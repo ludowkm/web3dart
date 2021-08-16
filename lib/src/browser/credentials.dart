@@ -50,6 +50,11 @@ class MetaMaskCredentials extends CredentialsWithKnownAddress
       params: [param],
     ).then((res) => res as String);
   }
+
+  @override
+  Future<MsgSignature> signEIP712TypedData(String data, {int? chainId}) {
+    throw UnsupportedError('signEIP712TypedData is not supported on MetaMask');
+  }
 }
 
 String? _bigIntToQuantity(BigInt? int) {
