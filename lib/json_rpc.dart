@@ -72,14 +72,16 @@ class JsonRPC extends RpcService {
       if (data.containsKey('error')) {
         final error = data['error'];
 
-        final code = error['code'] as int;
-        final message = error['message'] as String;
+        final code = error['code'];
+        final message = error['message'] ?? error['details'];
 
         if (RpcInterceptor.instance.onRpcUrlError != null &&
             ((code == -32603 &&
-                    message.toLowerCase().contains('internal error')) ||
+                    message?.toLowerCase().contains('internal error') ==
+                        true) ||
                 code == -32005 &&
-                    message.toLowerCase().contains('limit exceeded'))) {
+                    message?.toLowerCase().contains('limit exceeded') ==
+                        true)) {
           final overrideUrl =
               await RpcInterceptor.instance.onRpcUrlError!.call(url);
           if (overrideUrl != null) {
@@ -89,7 +91,7 @@ class JsonRPC extends RpcService {
 
         final errorData = error['data'];
 
-        throw RPCError(code, message, errorData);
+        throw RPCError(code as int?, message as String?, errorData);
       }
 
       final id = data['id'] as int;
@@ -124,15 +126,18 @@ class RPCResponse {
 
 /// Exception thrown when an the server returns an error code to an rpc request.
 class RPCError implements Exception {
-  final int errorCode;
-  final String message;
+  final int? errorCode;
+  final String? message;
   final dynamic data;
 
   const RPCError(this.errorCode, this.message, this.data);
 
   @override
   String toString() {
-    return 'RPCError: got code $errorCode with msg \"$message\".';
+    if (errorCode != null && message != null) {
+      return 'RPCError: got code $errorCode with msg \"$message\".';
+    }
+    return 'RPCError: unknown code and message';
   }
 }
 
