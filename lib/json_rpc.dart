@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart';
+import 'package:web3dart/crypto.dart';
 
 // ignore: one_member_abstracts
 abstract class RpcService {
@@ -67,7 +68,21 @@ class JsonRPC extends RpcService {
         }
       }
 
-      final data = json.decode(response.body) as Map<String, dynamic>;
+      final data = json.decode(response.body);
+      if (data is String && params.length == 1) {
+        final param = params.first?.toString();
+        if (param != null &&
+            param.length > 42 &&
+            RegExp(r'^(0x|0X)?[a-fA-F0-9]+$').hasMatch(param)) {
+          return RPCResponse(_currentRequestId,
+              bytesToHex(keccak256(hexToBytes(param)), include0x: true));
+        }
+      }
+
+      if (data is! Map) {
+        throw const RPCError(
+            -32700, 'Invalid response data was received by the server', null);
+      }
 
       if (data.containsKey('error')) {
         final error = data['error'];
