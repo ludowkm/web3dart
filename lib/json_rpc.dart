@@ -6,6 +6,7 @@ import 'dart:io';
 
 import 'package:http/http.dart';
 import 'package:web3dart/crypto.dart';
+import 'package:web3dart/web3dart.dart';
 
 // ignore: one_member_abstracts
 abstract class RpcService {
@@ -74,8 +75,15 @@ class JsonRPC extends RpcService {
         if (param != null &&
             param.length > 42 &&
             RegExp(r'^(0x|0X)?[a-fA-F0-9]+$').hasMatch(param)) {
-          return RPCResponse(_currentRequestId,
-              bytesToHex(keccak256(hexToBytes(param)), include0x: true));
+          final txHash =
+              bytesToHex(keccak256(hexToBytes(param)), include0x: true);
+          final txInfo = await Future.delayed(const Duration(milliseconds: 500))
+              .then((_) =>
+                  Web3Client(url, Client()).getTransactionByHash(txHash));
+          if (txInfo != null) {
+            throw Exception('Transaction not found');
+          }
+          return RPCResponse(_currentRequestId, txHash);
         }
       }
 
