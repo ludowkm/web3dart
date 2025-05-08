@@ -273,6 +273,21 @@ class ContractFunction {
     final parsedData = tuple.decode(buffer, 0);
     return parsedData.data;
   }
+
+  /// Decode the data for a function call (e.g. tx.data)
+  List<dynamic> decodeFunctionData(String data) {
+    if (data.startsWith('0x')) {
+      data = data.substring(2);
+    }
+    if (!data.toLowerCase().startsWith(bytesToHex(selector).toLowerCase())) {
+      throw Exception('Must match selector');
+    }
+    final tuple = TupleType(parameters.map((p) => p.type).toList());
+    final buffer = hexToBytes(data.substring(8)).buffer;
+
+    final parsedData = tuple.decode(buffer, 0);
+    return parsedData.data;
+  }
 }
 
 /// An event that can be emitted by a smart contract during a transaction.
