@@ -366,27 +366,32 @@ class Web3Client {
     EtherAmount? maxPriorityFeePerGas,
     EtherAmount? maxFeePerGas,
     Uint8List? data,
+    EtherAmount? fakeBalanceAmount,
     @Deprecated('Parameter is ignored') BlockNum? atBlock,
   }) async {
-    final amountHex = await _makeRPCCall<String>(
-      'eth_estimateGas',
-      [
-        {
-          if (sender != null) 'from': sender.hex,
-          if (to != null) 'to': to.hex,
-          if (amountOfGas != null) 'gas': '0x${amountOfGas.toRadixString(16)}',
-          if (gasPrice != null)
-            'gasPrice': '0x${gasPrice.getInWei.toRadixString(16)}',
-          if (maxPriorityFeePerGas != null)
-            'maxPriorityFeePerGas':
-                '0x${maxPriorityFeePerGas.getInWei.toRadixString(16)}',
-          if (maxFeePerGas != null)
-            'maxFeePerGas': '0x${maxFeePerGas.getInWei.toRadixString(16)}',
-          if (value != null) 'value': '0x${value.getInWei.toRadixString(16)}',
-          if (data != null) 'data': bytesToHex(data, include0x: true),
-        },
-      ],
-    );
+    List<dynamic> params = [
+      {
+        if (sender != null) 'from': sender.hex,
+        if (to != null) 'to': to.hex,
+        if (amountOfGas != null) 'gas': '0x${amountOfGas.toRadixString(16)}',
+        if (gasPrice != null)
+          'gasPrice': '0x${gasPrice.getInWei.toRadixString(16)}',
+        if (maxPriorityFeePerGas != null)
+          'maxPriorityFeePerGas':
+              '0x${maxPriorityFeePerGas.getInWei.toRadixString(16)}',
+        if (maxFeePerGas != null)
+          'maxFeePerGas': '0x${maxFeePerGas.getInWei.toRadixString(16)}',
+        if (value != null) 'value': '0x${value.getInWei.toRadixString(16)}',
+        if (data != null) 'data': bytesToHex(data, include0x: true),
+      }
+    ];
+    if (fakeBalanceAmount != null && sender != null) {
+      final Map<String, dynamic> extendedParams = {};
+      extendedParams[sender.hex] = {'balance': '0x${fakeBalanceAmount.getInWei.toRadixString(16)}'};
+      params.add('latest');
+      params.add(extendedParams);
+    }
+    final amountHex = await _makeRPCCall<String>('eth_estimateGas', params);
     return hexToInt(amountHex);
   }
 
