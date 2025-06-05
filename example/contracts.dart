@@ -1,5 +1,5 @@
 import 'package:http/http.dart';
-import 'package:web3dart/web3dart.dart';
+import 'package:web3dart_plus/web3dart_plus.dart';
 import 'package:web_socket_channel/io.dart';
 
 import 'token.g.dart';

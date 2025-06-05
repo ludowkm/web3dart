@@ -1,7 +1,7 @@
 import 'package:test/test.dart';
-import 'package:web3dart/contracts.dart';
-import 'package:web3dart/credentials.dart';
-import 'package:web3dart/crypto.dart';
+import 'package:web3dart_plus/contracts.dart';
+import 'package:web3dart_plus/credentials.dart';
+import 'package:web3dart_plus/crypto.dart';
 
 void main() {
   final event = ContractEvent(false, 'Transfer', const [

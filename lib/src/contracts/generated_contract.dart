@@ -1,7 +1,7 @@
 import 'package:meta/meta.dart';
 
 import '../../crypto.dart';
-import '../../web3dart.dart';
+import '../../web3dart_plus.dart';
 
 /// Base classes for generated contracts.
 ///

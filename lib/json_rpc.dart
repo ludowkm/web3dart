@@ -5,8 +5,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart';
-import 'package:web3dart/crypto.dart';
-import 'package:web3dart/web3dart.dart';
+import 'package:web3dart_plus/crypto.dart';
+import 'package:web3dart_plus/web3dart_plus.dart';
 
 // ignore: one_member_abstracts
 abstract class RpcService {

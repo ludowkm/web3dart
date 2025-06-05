@@ -1,4 +1,4 @@
-part of 'package:web3dart/web3dart.dart';
+part of 'package:web3dart_plus/web3dart_plus.dart';
 
 class Transaction {
   /// The address of the sender of this transaction.
