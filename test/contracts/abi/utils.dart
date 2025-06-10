@@ -2,9 +2,9 @@ import 'dart:typed_data';
 
 import 'package:test/test.dart';
 
-import 'package:web3dart/contracts.dart';
-import 'package:web3dart/crypto.dart';
-import 'package:web3dart/src/utils/length_tracking_byte_sink.dart';
+import 'package:web3dart_avacus/contracts.dart';
+import 'package:web3dart_avacus/crypto.dart';
+import 'package:web3dart_avacus/src/utils/length_tracking_byte_sink.dart';
 
 void expectEncodes<T>(AbiType<T> type, T data, String encoded) {
   final buffer = LengthTrackingByteSink();

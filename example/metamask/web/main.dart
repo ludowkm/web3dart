@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'dart:html';
 import 'dart:typed_data';
 
-import 'package:web3dart/browser.dart';
-import 'package:web3dart/web3dart.dart';
+import 'package:web3dart_avacus/browser.dart';
+import 'package:web3dart_avacus/web3dart_avacus.dart';
 
 Future<void> main() async {
   final eth = window.ethereum;

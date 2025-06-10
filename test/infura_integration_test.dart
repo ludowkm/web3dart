@@ -3,8 +3,8 @@ import 'dart:io';
 
 import 'package:http/http.dart';
 import 'package:test/test.dart';
-import 'package:web3dart/contracts/erc20.dart';
-import 'package:web3dart/web3dart.dart';
+import 'package:web3dart_avacus/contracts/erc20.dart';
+import 'package:web3dart_avacus/web3dart_avacus.dart';
 
 void main() {
   final infuraProjectId = Platform.environment['INFURA_ID'];
