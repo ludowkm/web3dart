@@ -69,6 +69,52 @@ class JsonRPC extends RpcService {
         }
       }
 
+      if (response.statusCode < 200 || response.statusCode >= 300) {
+        var errorMessage = 'Invalid response data was received by the server';
+        // Handle common error codes
+        if (response.statusCode >= 400 && response.statusCode < 500) {
+          switch (response.statusCode) {
+            case 400:
+              errorMessage = 'Bad Request';
+              break;
+            case 401:
+              errorMessage = 'Unauthorized';
+              break;
+            case 403:
+              errorMessage = 'Forbidden';
+              break;
+            case 404:
+              errorMessage = 'Not Found';
+              break;
+            case 408:
+              errorMessage = 'Request Timeout';
+              break;
+            case 422:
+              errorMessage = 'Unprocessable Entity';
+              break;
+            case 429:
+              errorMessage = 'Too Many Requests';
+              break;
+          }
+        } else if (response.statusCode >= 500 && response.statusCode < 600) {
+          switch (response.statusCode) {
+            case 500:
+              errorMessage = 'Internal Server Error';
+              break;
+            case 502:
+              errorMessage = 'Bad Gateway';
+              break;
+            case 503:
+              errorMessage = 'Service Unavailable';
+              break;
+            case 504:
+              errorMessage = 'Gateway Timeout';
+              break;
+          }
+        }
+        throw HttpException(errorMessage);
+      }
+
       final data = json.decode(response.body);
       if (data is String && params.length == 1) {
         final param = params.first?.toString();
@@ -131,6 +177,12 @@ class JsonRPC extends RpcService {
         } else {
           rethrow;
         }
+      } else if (e is FormatException) {
+        throw const RPCError(
+          -32700,
+          'Invalid response data was received by the server',
+          null,
+        );
       } else {
         rethrow;
       }
